@@ -1,0 +1,17 @@
+{
+    "kubernetes-core": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "kubernetes-core",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-NxNYCIb4+bUJ9c4JzuNgZ1zkWxcOU2Mdkwe3bR3Nvyw=",
+            "type": "url",
+            "url": "https://galaxy.ansible.com/download/kubernetes-core-2.4.0.tar.gz"
+        },
+        "version": "2.4.0"
+    }
+}
