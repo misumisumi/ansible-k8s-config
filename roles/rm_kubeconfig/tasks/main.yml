@@ -1,0 +1,6 @@
+---
+# tasks file for rm_kubeconfig
+- name: remove certs for k8s
+  ansible.builtin.file:
+    path: "{{ ansible_env.TMPDIR | default('/tmp') }}/kubernetes"
+    state: absent

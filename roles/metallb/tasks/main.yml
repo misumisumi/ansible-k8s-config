@@ -1,0 +1,14 @@
+---
+# tasks file for metallb
+- name: Add metallb chart repo
+  kubernetes.core.helm_repository:
+    name: metallb
+    repo_url: "https://kubernetes.github.io/metallb"
+- name: Deploy latest version of Prometheus chart inside monitoring namespace (and create it)
+  kubernetes.core.helm:
+    name: metallb
+    chart_ref: metallb/metallb
+    release_namespace: metallb
+    create_namespace: true
+    values_files:
+      - values.yml
