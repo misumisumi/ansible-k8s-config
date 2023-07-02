@@ -1,6 +1,21 @@
-configInline:
-  address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-        - "{{ metallb-addresses }}"
+controller:
+  resources:
+    apiVersion: metallb.io/v1beta1
+    kind: L2Advertisement
+    metadata:
+      name: default
+      namespace: metallb-system
+    apiVersion: metallb.io/v1beta1
+    kind: IPAddressPool
+    metadata:
+      name: default-pool
+      namespace: metallb-system
+    spec:
+    addresses:
+    - "{{ metallb-addresses }}"
+# configInline:
+#   address-pools:
+#     - name: default
+#       protocol: layer2
+#       addresses:
+#         - "{{ metallb-addresses }}"

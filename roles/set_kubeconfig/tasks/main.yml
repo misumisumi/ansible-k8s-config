@@ -2,6 +2,6 @@
 # tasks file for set_kubeconfigj
 - name: copy certs for k8s
   ansible.builtin.copy:
-    src: ../../../.kube/kubernetes
+    src: "{{ kubeconfig }}"
     dest: "{{ ansible_env.TMPDIR | default('/tmp') }}"
     mode: "0644"
