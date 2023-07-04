@@ -2,7 +2,7 @@
 # tasks file for metallb
 - name: copy values.yml
   ansible.builtin.copy:
-    src: values.yml
+    src: "{{ stage }}.yml"
     dest: "{{ ansible_env.TMPDIR | default('/tmp') }}"
     mode: "0644"
 
@@ -19,12 +19,17 @@
     chart_ref: metallb/metallb
     release_namespace: metallb-system
     create_namespace: true
-    values_files:
-      - /tmp/values.yml
+    kubeconfig: "{{ kubeconfig }}"
+    context: "{{ stage }}"
+
+- name: Apply metallb config to the cluster.
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ stage }}.yml"
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
 
 - name: remove values.yml
   ansible.builtin.file:
-    path: "{{ ansible_env.TMPDIR | default('/tmp') }}/values.yml"
+    path: "{{ ansible_env.TMPDIR | default('/tmp') }}/{{ stage }}.yml"
     state: absent

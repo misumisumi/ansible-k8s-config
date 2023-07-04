@@ -4,8 +4,14 @@
   gather_facts: false
   roles:
     - role: set_kubeconfig
+      tags:
+        - ingress-nginx
+        - metallb
     - role: ingress-nginx
       tags: ingress-nginx
     - role: metallb
       tags: metallb
     - role: rm_kubeconfig
+      tags:
+        - ingress-nginx
+        - metallb
