@@ -1,6 +1,6 @@
 ---
 # tasks file for metallb
-- name: copy values.yml
+- name: copy config yaml
   ansible.builtin.copy:
     src: "{{ stage }}.yml"
     dest: "{{ ansible_env.TMPDIR | default('/tmp') }}"
@@ -29,7 +29,7 @@
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
 
-- name: remove values.yml
+- name: remove config yaml
   ansible.builtin.file:
     path: "{{ ansible_env.TMPDIR | default('/tmp') }}/{{ stage }}.yml"
     state: absent
