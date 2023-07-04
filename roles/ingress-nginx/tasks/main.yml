@@ -1,5 +1,10 @@
 ---
 # tasks file for ingress-nginx
+- name: copy values.yaml
+  ansible.builtin.copy:
+    src: "values.yml"
+    dest: "{{ ansible_env.TMPDIR | default('/tmp') }}"
+    mode: "0644"
 - name: Add ingress-nginx chart repo
   kubernetes.core.helm_repository:
     name: ingress-nginx
@@ -10,7 +15,13 @@
   kubernetes.core.helm:
     name: ingress-nginx
     chart_ref: ingress-nginx/ingress-nginx
+    values_files:
+      - values.yml
     release_namespace: ingress-nginx
     create_namespace: true
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
+- name: remove values.yaml
+  ansible.builtin.file:
+    path: "{{ ansible_env.TMPDIR | default('/tmp') }}/values.yml"
+    state: absent
