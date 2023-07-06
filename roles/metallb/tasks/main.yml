@@ -1,11 +1,4 @@
 ---
-# tasks file for metallb
-- name: copy config yaml
-  ansible.builtin.copy:
-    src: "{{ stage }}.yml"
-    dest: "{{ ansible_env.TMPDIR | default('/tmp') }}"
-    mode: "0644"
-
 - name: Add metallb chart repo
   kubernetes.core.helm_repository:
     name: metallb
@@ -13,7 +6,7 @@
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
 
-- name: Deploy latest version of Prometheus chart inside monitoring namespace (and create it)
+- name: Deploy latest version of metallb
   kubernetes.core.helm:
     name: metallb
     chart_ref: metallb/metallb
@@ -25,11 +18,6 @@
 - name: Apply metallb config to the cluster.
   kubernetes.core.k8s:
     state: present
-    src: "{{ stage }}.yml"
+    src: "roles/metallb/files/{{ stage }}.yml"
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
-
-- name: remove config yaml
-  ansible.builtin.file:
-    path: "{{ ansible_env.TMPDIR | default('/tmp') }}/{{ stage }}.yml"
-    state: absent
