@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - role: set_kubeconfig
+      tags:
+        - ingress
+        - ceph
+    - role: ingress-nginx
+      tags:
+        - ingress
+    - role: metallb
+      tags:
+        - ingress
+    - role: rook_ceph
+      tags:
+        - ceph
+    - role: rm_kubeconfig
+      tags:
+        - ingress
+        - ceph
