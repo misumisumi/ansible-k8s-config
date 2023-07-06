@@ -2,6 +2,4 @@
 stage=development
 kubeconfig=.kube/admin.kubeconfig
 kubecerts_dir=.kube/kubernetes
-
-[ingress:vars]
 metallb_addresses="10.150.10.200-10.150.10.250"
