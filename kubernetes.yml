@@ -6,17 +6,22 @@
     - role: set_kubeconfig
       tags:
         - ingress
-        - ceph
+        - ceph-operator
+        - ceph-cluster
     - role: ingress-nginx
       tags:
         - ingress
     - role: metallb
       tags:
         - ingress
-    - role: rook_ceph
+    - role: ceph-operator
       tags:
-        - ceph
+        - ceph-operator
+    - role: ceph-cluster
+      tags:
+        - ceph-cluster
     - role: rm_kubeconfig
       tags:
         - ingress
-        - ceph
+        - ceph-operator
+        - ceph-cluster

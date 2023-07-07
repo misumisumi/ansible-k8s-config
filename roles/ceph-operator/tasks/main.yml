@@ -15,18 +15,6 @@
     create_namespace: true
     wait: true
     values_files:
-      - "roles/rook_ceph/files/operator-{{ stage }}.yml"
-    kubeconfig: "{{ kubeconfig }}"
-    context: "{{ stage }}"
-
-- name: Deploy latest version of rook/ceph-cluster chart
-  kubernetes.core.helm:
-    name: rook-ceph-cluster
-    chart_ref: rook-release/rook-ceph-cluster
-    release_namespace: rook-ceph
-    create_namespace: true
-    wait: true
-    values_files:
-      - "roles/rook_ceph/files/cluster-{{ stage }}.yml"
+      - "roles/ceph-operator/files/{{ stage }}.yml"
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
