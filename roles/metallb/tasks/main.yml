@@ -12,6 +12,7 @@
     chart_ref: metallb/metallb
     release_namespace: metallb-system
     create_namespace: true
+    wait: true
     kubeconfig: "{{ kubeconfig }}"
     context: "{{ stage }}"
 

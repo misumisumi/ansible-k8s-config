@@ -13,6 +13,7 @@
     chart_ref: rook-release/rook-ceph
     release_namespace: rook-ceph
     create_namespace: true
+    wait: true
     values_files:
       - "roles/rook_ceph/files/operator-{{ stage }}.yml"
     kubeconfig: "{{ kubeconfig }}"
@@ -24,6 +25,7 @@
     chart_ref: rook-release/rook-ceph-cluster
     release_namespace: rook-ceph
     create_namespace: true
+    wait: true
     values_files:
       - "roles/rook_ceph/files/cluster-{{ stage }}.yml"
     kubeconfig: "{{ kubeconfig }}"
