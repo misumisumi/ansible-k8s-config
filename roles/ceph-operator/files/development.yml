@@ -1,4 +1,6 @@
+allowLoopDevices: false
 csi:
+  forceCephFSKernelClient: false
   # -- The volume of the CephCSI RBD plugin DaemonSet
   csiRBDPluginVolume:
     - name: lib-modules
