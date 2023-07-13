@@ -5,15 +5,19 @@
   roles:
     - role: set_kubeconfig
       tags:
-        - ingress
-        - ceph-operator
-        - ceph-cluster
+        - always
+    - role: k8tz
+      tags:
+        - k8tz
     - role: ingress-nginx
       tags:
         - ingress
     - role: metallb
       tags:
         - ingress
+    - role: external-dns
+      tags:
+        - external-dns
     - role: ceph-operator
       tags:
         - ceph-operator
@@ -22,6 +26,4 @@
         - ceph-cluster
     - role: rm_kubeconfig
       tags:
-        - ingress
-        - ceph-operator
-        - ceph-cluster
+        - always
