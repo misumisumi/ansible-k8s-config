@@ -1,2 +1,3 @@
 ---
 - import_playbook: kubernetes.yml
+- import_playbook: mk-ctrlfs.yml

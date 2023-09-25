@@ -1,3 +1,7 @@
 [kubernetes-core]
 src.github_tag = 'ansible-collections/kubernetes.core'
 fetch.url = "https://galaxy.ansible.com/download/kubernetes-core-$ver.tar.gz"
+
+[community-general]
+src.github_tag = 'ansible-collections/community.general'
+fetch.url = "https://galaxy.ansible.com/download/community-general-$ver.tar.gz"

@@ -1,4 +1,19 @@
 {
+    "community-general": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "community-general",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "name": null,
+            "sha256": "sha256-7awKnluF+YerycTcHeB3ZCCpoPhLVcOzIxw++fFz0d0=",
+            "type": "url",
+            "url": "https://galaxy.ansible.com/download/community-general-7.4.0.tar.gz"
+        },
+        "version": "7.4.0"
+    },
     "kubernetes-core": {
         "cargoLocks": null,
         "date": null,
