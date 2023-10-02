@@ -1,7 +1,15 @@
-[kubernetes-core]
+[collection-kubernetes-core]
 src.github_tag = 'ansible-collections/kubernetes.core'
 fetch.url = "https://galaxy.ansible.com/download/kubernetes-core-$ver.tar.gz"
 
-[community-general]
+[collection-community-general]
 src.github_tag = 'ansible-collections/community.general'
 fetch.url = "https://galaxy.ansible.com/download/community-general-$ver.tar.gz"
+
+[role-ha-cluster-pacemaker]
+src.github_tag = 'OndrejHome/ansible.ha-cluster-pacemaker'
+fetch.github = 'OndrejHome/ansible.ha-cluster-pacemaker'
+
+[role-pcs-module-2]
+src.github_tag = 'OndrejHome/ansible.pcs-modules-2'
+fetch.github = 'OndrejHome/ansible.pcs-modules-2'
