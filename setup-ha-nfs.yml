@@ -1,0 +1,10 @@
+---
+- hosts: ha-nfs
+  gather_facts: false
+  roles:
+    - role: mkhosts
+      terraform_outputs_path: "/home/sumi/Templates/nix/nixos-k8s-config/terraform/nfs/development.json"
+
+    - role: ondrejhome.ha-cluster-pacemaker
+
+    - role: geerlingguy.nfs

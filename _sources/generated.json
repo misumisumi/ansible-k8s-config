@@ -1,9 +1,9 @@
 {
-    "community-general": {
+    "collection-community-general": {
         "cargoLocks": null,
         "date": null,
         "extract": null,
-        "name": "community-general",
+        "name": "collection-community-general",
         "passthru": null,
         "pinned": false,
         "src": {
@@ -14,11 +14,11 @@
         },
         "version": "7.4.0"
     },
-    "kubernetes-core": {
+    "collection-kubernetes-core": {
         "cargoLocks": null,
         "date": null,
         "extract": null,
-        "name": "kubernetes-core",
+        "name": "collection-kubernetes-core",
         "passthru": null,
         "pinned": false,
         "src": {
@@ -28,5 +28,71 @@
             "url": "https://galaxy.ansible.com/download/kubernetes-core-2.4.0.tar.gz"
         },
         "version": "2.4.0"
+    },
+    "role-ansible-role-nfs": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "role-ansible-role-nfs",
+        "passthru": {
+            "aname": "geerlingguy.nfs"
+        },
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "geerlingguy",
+            "repo": "ansible-role-nfs",
+            "rev": "2.0.0",
+            "sha256": "sha256-OFVwlSBdHAoa3F5QATzDUzP7jhlq1cc0uNe5HfUYz6w=",
+            "type": "github"
+        },
+        "version": "2.0.0"
+    },
+    "role-ha-cluster-pacemaker": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "role-ha-cluster-pacemaker",
+        "passthru": {
+            "aname": "ondrejhome.ha-cluster-pacemaker"
+        },
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "OndrejHome",
+            "repo": "ansible.ha-cluster-pacemaker",
+            "rev": "41.0.0",
+            "sha256": "sha256-EDOpLVELfdxVriVhn26cI/yNe3SDNJWd9IhqqUvXaT0=",
+            "type": "github"
+        },
+        "version": "41.0.0"
+    },
+    "role-pcs-module-2": {
+        "cargoLocks": null,
+        "date": null,
+        "extract": null,
+        "name": "role-pcs-module-2",
+        "passthru": {
+            "aname": "ondrejhome.pcs-modules-2"
+        },
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "OndrejHome",
+            "repo": "ansible.pcs-modules-2",
+            "rev": "28.0.0",
+            "sha256": "sha256-K5uGz/ylKlb+gNGL7J3N4AqRzTrDiAOn8wXZwC8Gzik=",
+            "type": "github"
+        },
+        "version": "28.0.0"
     }
 }

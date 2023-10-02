@@ -1,4 +1,4 @@
-{ stdenv
+{ stdenvNoCC
 , lib
 , runCommand
 , fetchgit
@@ -22,7 +22,6 @@
 */
 let
   collectionSources = import ../_sources/generated.nix { inherit fetchgit fetchurl fetchFromGitHub dockerTools; };
-  roles = [ "OndrejHome.ha-cluster-pacemaker" ];
 
   installCollections =
     lib.concatStringsSep "\n" (
@@ -31,29 +30,44 @@ let
   installRoles =
     lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: installRole name) (lib.filterAttrs (n: v: lib.hasPrefix "role-" n) collectionSources));
 
-  installCollection = name: "${ansible}/bin/ansible-galaxy collection install ${collection name}/collection.tar.gz";
+  installCollection = name: ''
+    ln -sf ${collection name}/ansible_collections/* "''${ANSIBLE_COLLECTIONS_PATHS}"
+  '';
   installRole = name: ''
-    mkdir -p  "''${ANSIBLE_ROLES_PATH}/${name}"
-    cp -r ${collectionSources.${name}.src}/* "''${ANSIBLE_ROLES_PATH}/${name}"
+    ln -sf ${role name}/roles/* "''${ANSIBLE_ROLES_PATH}"
   '';
 
   collection = name:
-    stdenv.mkDerivation {
+    stdenvNoCC.mkDerivation {
       inherit (collectionSources."${name}") pname version src;
 
       phases = [ "installPhase" ];
 
       installPhase = ''
         mkdir -p $out
-        cp $src $out/collection.tar.gz
+        ANSIBLE_HOME="''$TMPDIR" ${ansible}/bin/ansible-galaxy collection install $src -p $out
+      '';
+    };
+  role = name:
+    stdenvNoCC.mkDerivation rec {
+      pname = collectionSources."${name}".aname;
+      inherit (collectionSources."${name}") version src;
+
+      phases = [ "unpackPhase" "installPhase" ];
+
+      installPhase = ''
+        mkdir -p $out/roles/${pname}
+        cp -r ./* $out/roles/${pname}/
+        echo "version: ${version}" > $out/roles/${pname}/meta/.galaxy_install_info
       '';
     };
 in
 runCommand "ansible-collections" { } ''
-  mkdir -p $out/roles
+  mkdir -p $out/{ansible_collections,roles}
   export HOME=./
-  export ANSIBLE_COLLECTIONS_PATHS=$out
+  export ANSIBLE_COLLECTIONS_PATHS=$out/ansible_collections
   export ANSIBLE_ROLES_PATH=$out/roles
   ${installCollections}
   ${installRoles}
 ''
+
