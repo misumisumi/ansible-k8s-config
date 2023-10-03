@@ -1,0 +1,22 @@
+resource "r0" {
+{% for node in _resource %}
+  on "{{ node.name }}" {
+    node-id {{ node.id }};
+  {% for volume in node.volumes %}
+  volume {{ loop.index0 }} {
+      device minor {{ loop.index0 }};
+      disk "{{ volume }}";
+      meta-disk "{{ node.meta_disk }}";
+    }
+  {% endfor %}
+}
+
+{% endfor %}
+
+  connection {
+  {% for node in _resource %}
+  host "{{ node.name }}" address {{ node.address }};
+  {% endfor %}
+}
+}
+

@@ -1,0 +1,8 @@
+---
+resource:
+  - name: ""
+    id: 0
+    address: ""
+    meta_disk: "internal"
+    volumes:
+      - "/dev/sda"
