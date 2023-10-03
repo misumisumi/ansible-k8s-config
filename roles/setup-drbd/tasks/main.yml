@@ -1,12 +1,23 @@
 ---
 # tasks file for roles/setup-drbd
+- name: Create LUKS container with a passphrase
+  community.crypto.luks_device:
+    device: "{{ luksdevice }}"
+    state: "opened"
+    passphrase: "{{ lukspassphrase }}"
+    name: "{{ luksname }}"
+
+- name: permit traffic in default zone for https service
+  ansible.posix.firewalld:
+    port: "{{ drbdport }}/tcp"
+    permanent: true
+    state: enabled
+
 - name: Set drbd resource
   ansible.builtin.set_fact:
     _resource: "{{ resource }}"
+    drbdport: "{{ drbdport }}"
   run_once: yes
-
-- debug:
-    msg: "{{ _resource }}"
 
 - name: Set drbd config
   become: yes
@@ -16,3 +27,17 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Confirm the need for create-md
+  ansible.builtin.shell: drbdadm status | grep "No currently"
+  register: check_create
+  failed_when: check_create.rc not in [0,1]
+
+- name: Run drbdadm create-md all
+  ansible.builtin.command: drbdadm create-md all --force
+  when: check_create.rc == 0
+
+- name: Stard drbd.service
+  ansible.builtin.systemd:
+    state: started
+    name: drbd
