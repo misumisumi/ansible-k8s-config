@@ -19,21 +19,15 @@
 
 - name: Install some packages
   ansible.builtin.dnf:
-    name:
-      - kmod-drbd9x
-      - zfs
+    name: "{{ install_pkgs }}"
     state: latest
-    enablerepo: elrepo,zfs
+    enablerepo: "{{ repos }}"
 
-- name: Load drbd
+- name: Load kernel modules
   community.general.modprobe:
-    name: drbd
+    name: "{{ item }}"
     persistent: present
-
-- name: Load zfs
-  community.general.modprobe:
-    name: zfs
-    persistent: present
+  with_items: "{{ modprobes }}"
 
 - name: Reboot (timeout 5minitus)
   ansible.builtin.reboot:
