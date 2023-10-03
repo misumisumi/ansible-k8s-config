@@ -1,10 +1,54 @@
 ---
 - hosts: ha-nfs
-  gather_facts: false
+  gather_facts: true
   roles:
     - role: mkhosts
       terraform_outputs_path: "/home/sumi/Templates/nix/nixos-k8s-config/terraform/nfs/development.json"
 
-    - role: ondrejhome.ha-cluster-pacemaker
+    - role: initRHEL
+      install_pkgs:
+        - zfs
+        - kmod-drbd9x
+        - drbd9x-utils
+        - drbd-pacemaker
+      repos: "epel,elrepo,zfs"
+      modprobes:
+        - zfs
+        - drbd
 
-    - role: geerlingguy.nfs
+    - role: setup-drbd
+      resource:
+        - name: "nfs1"
+          id: 0
+          address: "10.150.10.70:7789"
+          meta_disk: "internal"
+          volumes:
+            - "/dev/sdb"
+        - name: "nfs2"
+          id: 1
+          address: "10.150.10.71:7789"
+          meta_disk: "internal"
+          volumes:
+            - "/dev/sdb"
+    - role: ondrejhome.ha-cluster-pacemaker
+      cluster_name: "ha-cluster"
+      cluster_user_pass: "almalinux"
+      cluster_firewall: true
+      cluster_configure_fence_xvm: false
+      cluster_resource:
+        - name: "drbd_r0"
+          resource_type: "ocf:linbit:drbd"
+          options:
+            - drbd_resource=r0
+            - op
+            - monitor
+            - interval=10s
+            - role=Master
+            - monitor
+            - interval=30s
+            - role=Slave
+          force_resource_update: optional
+          ignored_meta_attributes: optional
+          child_name: optional
+
+      # - role: geerlingguy.nfs
