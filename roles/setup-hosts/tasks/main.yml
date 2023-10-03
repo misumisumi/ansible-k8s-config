@@ -1,9 +1,4 @@
 ---
-# tasks file for ./roles/init-ha-nfs
-- name: Set timezone to Asia/Tokyo
-  community.general.timezone:
-    name: "Asia/Tokyo"
-
 - name: Load terraform outputs to var named terraform_outputs
   ansible.builtin.include_vars:
     file: "{{ terraform_outputs_path }}"
