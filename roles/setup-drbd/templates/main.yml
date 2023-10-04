@@ -1,7 +1,4 @@
 ---
-luksname: "cryptolvm"
-luksdevice: "/dev/sda"
-lukspassphrase: "foo"
 drbdport: 7789
 resource:
   - name: ""

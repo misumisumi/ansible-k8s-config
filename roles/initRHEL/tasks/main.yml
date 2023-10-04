@@ -28,7 +28,3 @@
     name: "{{ item }}"
     persistent: present
   with_items: "{{ modprobes }}"
-
-- name: Reboot (timeout 5minitus)
-  ansible.builtin.reboot:
-    reboot_timeout: 600

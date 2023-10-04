@@ -1,8 +1,16 @@
 ---
 # tasks file for ./roles/setup-lvm-on-drbd
+- name: Push lvm.conf to instance
+  ansible.builtin.copy:
+    src: lvm.conf
+    dest: /etc/lvm/lvm.conf
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Create a volume group on top of /dev/drbd0
   community.general.lvg:
-    vg: VolGroupNFS
+    vg: "VolGroup{{ ansible_hostname|upper }}"
     pvs: /dev/drbd0
 
 - name: Resize the logical volume to % of VG

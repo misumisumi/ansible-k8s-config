@@ -2,34 +2,41 @@
 - hosts: ha-nfs
   gather_facts: true
   roles:
-    - role: mkhosts
+    - role: setup-hosts
       terraform_outputs_path: "/home/sumi/Templates/nix/nixos-k8s-config/terraform/nfs/development.json"
 
     - role: initRHEL
       install_pkgs:
-        - zfs
         - kmod-drbd9x
         - drbd9x-utils
-        - drbd-pacemaker
-      repos: "epel,elrepo,zfs"
+        - cryptsetup
+        - lvm2
+        - firewalld
+      repos: "epel,elrepo"
       modprobes:
-        - zfs
         - drbd
 
-    - role: setup-drbd
-      resource:
-        - name: "nfs1"
-          id: 0
-          address: "10.150.10.70:7789"
-          meta_disk: "internal"
-          volumes:
-            - "/dev/sdb"
-        - name: "nfs2"
-          id: 1
-          address: "10.150.10.71:7789"
-          meta_disk: "internal"
-          volumes:
-            - "/dev/sdb"
+          #    - role: setup-luks
+          #      luksname: "cryptolvm"
+          #      luksdevice: "/dev/sdb"
+          #      lukspassphrase: "cryptolvm"
+          #
+          #    - role: setup-drbd
+          #      drbdport: 7789
+          #      resource:
+          #        - name: "nfs1"
+          #          id: 0
+          #          address: "10.150.10.70"
+          #          meta_disk: "internal"
+          #          volumes:
+          #            - "/dev/mapper/cryptolvm"
+          #        - name: "nfs2"
+          #          id: 1
+          #          address: "10.150.10.71"
+          #          meta_disk: "internal"
+          #          volumes:
+          #            - "/dev/mapper/cryptolvm"
+
     - role: ondrejhome.ha-cluster-pacemaker
       cluster_name: "ha-cluster"
       cluster_user_pass: "almalinux"
@@ -37,18 +44,8 @@
       cluster_configure_fence_xvm: false
       cluster_resource:
         - name: "drbd_r0"
-          resource_type: "ocf:linbit:drbd"
-          options:
-            - drbd_resource=r0
-            - op
-            - monitor
-            - interval=10s
-            - role=Master
-            - monitor
-            - interval=30s
-            - role=Slave
-          force_resource_update: optional
-          ignored_meta_attributes: optional
-          child_name: optional
+          resource_class: "ocf"
+          resource_type: "linbit:drbd"
+          options: "drbd_resource=r0 op monitor interval=10s promotable monitor interval=30s meta promotable-max=1 promotable-node-max=1 clone-max=2 clone-node-max=1 notify=true"
 
-      # - role: geerlingguy.nfs
+  # - role: geerlingguy.nfs
