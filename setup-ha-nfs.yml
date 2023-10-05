@@ -16,36 +16,62 @@
       modprobes:
         - drbd
 
-          #    - role: setup-luks
-          #      luksname: "cryptolvm"
-          #      luksdevice: "/dev/sdb"
-          #      lukspassphrase: "cryptolvm"
-          #
-          #    - role: setup-drbd
-          #      drbdport: 7789
-          #      resource:
-          #        - name: "nfs1"
-          #          id: 0
-          #          address: "10.150.10.70"
-          #          meta_disk: "internal"
-          #          volumes:
-          #            - "/dev/mapper/cryptolvm"
-          #        - name: "nfs2"
-          #          id: 1
-          #          address: "10.150.10.71"
-          #          meta_disk: "internal"
-          #          volumes:
-          #            - "/dev/mapper/cryptolvm"
+    - role: setup-luks
+      luksname: "cryptolvm"
+      luksdevice: "/dev/sdb"
+      lukspassphrase:
+        "cryptolvm"
+
+        # - role: setup-drbd
+        #   drbdport: 7789
+        #   resource:
+        #     - name: "nfs1"
+        #       id: 0
+        #       address: "10.150.10.70"
+        #       meta_disk: "internal"
+        #       volumes:
+        #         - "/dev/mapper/cryptolvm"
+        #     - name: "nfs2"
+        #       id: 1
+        #       address: "10.150.10.71"
+        #       meta_disk: "internal"
+        #       volumes:
+        #         - "/dev/mapper/cryptolvm"
 
     - role: ondrejhome.ha-cluster-pacemaker
       cluster_name: "ha-cluster"
       cluster_user_pass: "almalinux"
       cluster_firewall: true
       cluster_configure_fence_xvm: false
+      cluster_property:
+        - name: "stonith-enabled"
+          value: false
+        - name: no-quorum-policy
+          value: ignore
       cluster_resource:
-        - name: "drbd_r0"
-          resource_class: "ocf"
-          resource_type: "linbit:drbd"
-          options: "drbd_resource=r0 op monitor interval=10s promotable monitor interval=30s meta promotable-max=1 promotable-node-max=1 clone-max=2 clone-node-max=1 notify=true"
+        # - name: "drbd_r0"
+        #   resource_class: "ocf"
+        #   resource_type: "ocf:linbit:drbd"
+        #   options: "drbd_resource=r0 op monitor interval=10s promotable monitor interval=30s meta promotable-max=1 promotable-node-max=1 clone-max=2 clone-node-max=1 notify=true"
 
-  # - role: geerlingguy.nfs
+        - name: VirtualIP
+          resource_class: "ocf"
+          resource_type: "ocf:heartbeat:IPaddr2"
+          options: "ip=10.150.10.100 cidr_netmask=24 nic=enp5s0 op monitor interval=10s --group DRBD-group"
+
+        - name: "DRBD-mount"
+          resource_class: "ocf"
+          resource_type: "ocf:heartbeat:Filesystem"
+          options: "device=/dev/drbd0 directory=/drbd fstype=ext4 op start timeout=60s on-fail=restart op stop timeout=60s op monitor interval=10s timeout=60s on-fail=restart --group DRBD-group"
+
+        - name: NFS-daemon
+          resource_class: "ocf"
+          resource_type: "systemd:nfs-server"
+          options: "op start timeout=20s on-fail=restart op stop timeout=20s op monitor interval=10s timeout=10s on-fail=restart start-delay=20s --group DRBD-group"
+
+        - name: NFS-exportfs
+          resource_class: "ocf"
+          resource_type: "ocf:heartbeat:exportfs"
+          options: "clientspec=10.150.10.0/24 options=rw,async,no_root_squash,no_subtree_check directory=/drbd fsid=root --group DRBD-group"
+
+    # - role: geerlingguy.nfs

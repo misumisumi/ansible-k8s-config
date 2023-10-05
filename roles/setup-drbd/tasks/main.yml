@@ -22,7 +22,8 @@
     mode: 0644
 
 - name: Create-md
-  ansible.builtin.command: drbdadm create-md r0 --force
+  ansible.builtin.command: drbdadm create-md r0
+  ignore_errors: True
 
 - name: Up drbd
   ansible.builtin.command: drbdadm up r0
@@ -30,3 +31,14 @@
 - name: Make drbd primary on an instance set to primary
   ansible.builtin.command: drbdadm primary r0 --force
   when: "{{ drbd_primary | default(false) }}"
+
+- name: Check resource exist
+  ansible.builtin.shell: lsblk | grep drbd
+  register: drbd_disk
+
+- name: Create a ext4 filesystem on /dev/drbdX
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ item }}"
+  when: "{{ drbd_primary | default(false) }}"
+  with_items: "{{ drbd_disk }}"
