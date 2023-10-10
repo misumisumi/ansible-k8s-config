@@ -55,20 +55,22 @@
 
               ];
               commands = [ ];
-              packages = with pkgs;
-                with myScripts; [
-                  bashInteractive
-                  jq
-                  yq # python-yq
-                  argocd
-                  ansible
-                  kubectl
-                  kubernetes-helm
-                  nvfetcher
-                  # MyScripts
-                  k
-                  he
-                ];
+              devshell = {
+                packages = with pkgs;
+                  with myScripts; [
+                    bashInteractive
+                    jq
+                    yq # python-yq
+                    argocd
+                    ansible
+                    kubectl
+                    kubernetes-helm
+                    nvfetcher
+                    # MyScripts
+                    k
+                    he
+                  ];
+              };
             };
           };
         };
