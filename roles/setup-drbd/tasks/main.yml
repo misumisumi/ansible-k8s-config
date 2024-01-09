@@ -2,14 +2,14 @@
 # tasks file for roles/setup-drbd
 - name: permit traffic in default zone for https service
   ansible.posix.firewalld:
-    port: "{{ drbdport }}/tcp"
+    port: "{{ port }}/tcp"
     permanent: true
     state: enabled
 
 - name: Set drbd resource
   ansible.builtin.set_fact:
-    _resource: "{{ resource }}"
-    drbdport: "{{ drbdport }}"
+    _resources: "{{ resources }}"
+    port: "{{ port }}"
   run_once: yes
 
 - name: Set drbd config
@@ -31,14 +31,3 @@
 - name: Make drbd primary on an instance set to primary
   ansible.builtin.command: drbdadm primary r0 --force
   when: "{{ drbd_primary | default(false) }}"
-
-- name: Check resource exist
-  ansible.builtin.shell: lsblk | grep drbd
-  register: drbd_disk
-
-- name: Create a ext4 filesystem on /dev/drbdX
-  community.general.filesystem:
-    fstype: ext4
-    dev: "{{ item }}"
-  when: "{{ drbd_primary | default(false) }}"
-  with_items: "{{ drbd_disk }}"

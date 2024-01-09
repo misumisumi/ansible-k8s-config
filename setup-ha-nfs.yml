@@ -1,48 +1,41 @@
 ---
-- hosts: ha-nfs
-  gather_facts: true
+- hosts: ha_nfs
+  gather_facts: false
   roles:
     - role: setup-hosts
-      terraform_outputs_path: "/home/sumi/Templates/nix/nixos-k8s-config/terraform/nfs/development.json"
+      terraform_output_path: "{{ terraform_file_path }}"
+      # when:
+      #   - terraform_outputs_path is defined
 
     - role: initRHEL
       install_pkgs:
         - kmod-drbd9x
         - drbd9x-utils
-        - cryptsetup
-        - lvm2
         - firewalld
+        - kernel-devel
+        - zfs
+        # - cryptsetup
+        # - lvm2
       repos: "epel,elrepo"
       modprobes:
         - drbd
+        - zfs
 
-    - role: setup-luks
-      luksname: "cryptolvm"
-      luksdevice: "/dev/sdb"
-      lukspassphrase:
-        "cryptolvm"
+    # - role: setup-luks
+    #   luksname: "cryptolvm"
+    #   luksdevice: "/dev/sdb"
+    #   lukspassphrase: "cryptolvm"
 
-        # - role: setup-drbd
-        #   drbdport: 7789
-        #   resource:
-        #     - name: "nfs1"
-        #       id: 0
-        #       address: "10.150.10.70"
-        #       meta_disk: "internal"
-        #       volumes:
-        #         - "/dev/mapper/cryptolvm"
-        #     - name: "nfs2"
-        #       id: 1
-        #       address: "10.150.10.71"
-        #       meta_disk: "internal"
-        #       volumes:
-        #         - "/dev/mapper/cryptolvm"
+    - role: setup-drbd
+      port: "{{ drbd_port }}"
+      resources: "{{ drbd_resources }}"
 
     - role: ondrejhome.ha-cluster-pacemaker
       cluster_name: "ha-cluster"
       cluster_user_pass: "almalinux"
       cluster_firewall: true
       cluster_configure_fence_xvm: false
+      cluster_configure_fence_kdump: true
       cluster_property:
         - name: "stonith-enabled"
           value: false

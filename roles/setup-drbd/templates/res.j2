@@ -3,13 +3,13 @@ resource "r0" {
     before-resync-target "/usr/lib/drbd/snapshot-resync-target-lvm.sh";
     after-resync-target "/usr/lib/drbd/unsnapshot-resync-target-lvm.sh";
   }
-{% for node in _resource %}
-  on "{{ node.name }}" {
+{% for node in _resources %}
+  on "{{ node.target }}" {
     node-id {{ node.id }};
-  {% for volume in node.volumes %}
+  {% for disk in node.disks %}
   volume {{ loop.index0 }} {
       device minor {{ loop.index0 }};
-      disk "{{ volume }}";
+      disk "{{ disk }}";
       meta-disk "{{ node.meta_disk }}";
     }
   {% endfor %}
@@ -18,8 +18,8 @@ resource "r0" {
 {% endfor %}
 
   connection {
-  {% for node in _resource %}
-  host "{{ node.name }}" address {{ node.address }}:{{ drbdport }};
+  {% for node in _resources %}
+  host "{{ node.target }}" address {{ node.address }}:{{ port }};
   {% endfor %}
 }
 }
