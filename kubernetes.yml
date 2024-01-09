@@ -1,15 +1,7 @@
 ---
-- hosts: localhost
-  connection: local
+- hosts: kubectl
   gather_facts: false
   roles:
-    - role: set_kubeconfig
-      tags:
-        - k8tz
-        - ingress
-        - external-dns
-        - ceph-operator
-        - ceph-cluster
     - role: k8tz
       tags:
         - k8tz
@@ -27,11 +19,4 @@
         - ceph-operator
     - role: ceph-cluster
       tags:
-        - ceph-cluster
-    - role: rm_kubeconfig
-      tags:
-        - k8tz
-        - ingress
-        - external-dns
-        - ceph-operator
         - ceph-cluster
